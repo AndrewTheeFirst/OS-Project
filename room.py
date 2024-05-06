@@ -26,7 +26,7 @@ class Room(ABC):
 
     def near_interest(self, location: Location):
         for area in self.areas_of_interest:
-            if location.isWithin(10, area):
+            if location.isWithin(20, area):
                 return True
         return False
 
@@ -63,7 +63,8 @@ class SideRoom(Room):
             (15, 140, 640, 640)
         ]
         self.areas_of_interest = [
-            Location(500, 500)
+            Location(15, 140),
+            Location(200, 300)
         ]
         self.objects = [
             RoomObject("assets/chest_1.png", (15, 140), 16, 16, 5),

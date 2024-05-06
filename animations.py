@@ -50,7 +50,7 @@ class CharacterAnimation:
 
 class TextAnimation:
     def __init__(self, scale = 2):
-        self.sheet = image.load("assets\\font.png").convert_alpha()
+        self.sheet = image.load("assets/font.png").convert_alpha()
         self.actual_size = LETTER_SIZE * scale
         self._letters = self._get_letters()
 

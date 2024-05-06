@@ -84,12 +84,12 @@ class Game:
         return False
     
     def prompt_location(self):
-        prompt_at = self.rm.prompt_location(self.player.raw_location)
-        if prompt_at and not self.subtitle.show:
+        shouldPrompt = self.rm.prompt_location(self.player.raw_location)
+        if shouldPrompt and not self.subtitle.show:
             self.subtitle.show = True
-            self.subtitle.location = prompt_at
+            self.subtitle.location = self.player.location
             self.put_text()
-        elif prompt_at:
+        elif shouldPrompt:
             self.put_text()
         else:
             self.subtitle.show = False
