@@ -1,35 +1,39 @@
 from pygame import image, transform, Surface # image modification
 from pygame import time # changing frames
-from constants import Dir
+from constants import Dir, PlayerInfo
 
 COOL_DOWN = 150
 LETTER_SIZE = 16
 TEXT_CLOSENESS = 10
 
 class CharacterAnimation:
-    def __init__(self, scale):
-        self.sheet = image.load("assets\\character_sheet.png").convert_alpha()
-        self.animations = self._get_animations(scale)
+    def __init__(self):
+        self.sheet = image.load("assets/character_sheet.png").convert_alpha()
+        self.animations = self._get_animations()
         self.prev_ticks = time.get_ticks()
         self.frame = 0
 
-    def _get_image(self, animation_set: int, frame: int, scale: int, width: int = 16, height: int = 16, color_key: tuple[int, int, int] = (0, 0, 0)) -> Surface:
+    def _get_image(self, animation_set: int, frame: int) -> Surface:
 
         # creates a blank surface at the specified size
-        image = Surface((width, height)).convert_alpha()
+        image = Surface((PlayerInfo.BASE_PLAYER_SIZE, PlayerInfo.BASE_PLAYER_SIZE)).convert_alpha()
 
         # pastes the spritesheet onto the blank surface starting at (0, 0) 
         # using area of sheet from (0, 0) -> += (width, height)
-        image.blit(self.sheet, (0, 0), (frame * width, animation_set * height, width, height))
+        image.blit(self.sheet, (0, 0), 
+                   (frame * PlayerInfo.BASE_PLAYER_SIZE,
+                    animation_set * PlayerInfo.BASE_PLAYER_SIZE,
+                    PlayerInfo.BASE_PLAYER_SIZE,
+                    PlayerInfo.BASE_PLAYER_SIZE))
 
         # scales image
-        image = transform.scale(image, (width * scale, height * scale))
-        image.set_colorkey(color_key)
+        image = transform.scale(image, (PlayerInfo.PLAYER_SIZE, PlayerInfo.PLAYER_SIZE))
+        image.set_colorkey((0, 0, 0))
         return image
 
-    def _get_animations(self, scale) -> list[Surface]:
+    def _get_animations(self) -> list[Surface]:
         animation_set = 8
-        return [[self._get_image(animation, frame, scale) for frame in range(4)] for animation in range(animation_set)]
+        return [[self._get_image(animation, frame) for frame in range(4)] for animation in range(animation_set)]
 
     def _attempt_frame_update(self) -> None:
         updated_ticks = time.get_ticks()
@@ -68,7 +72,7 @@ class TextAnimation:
 
     def _get_letter(self, letter: str):
         if letter == " ":
-            return 
+            return self._get_image(32, 0)
         letters = "abcdefghijklmnopqrstuvwxyz" + "abcdefghijklmnopqrstuvwxyz".upper()
         index = letters.index(letter)
         case = 1
