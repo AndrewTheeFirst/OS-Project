@@ -60,7 +60,7 @@ class MiddleRoom(Room):
 class SideRoom(Room):
     def __init__(self):
         self.boundaries = [
-            (15, 140, 640, 640)
+            (15, 180 - (PlayerInfo.PLAYER_SIZE * 2) // 3, 700 - PlayerInfo.PLAYER_SIZE, 700 - PlayerInfo.PLAYER_SIZE)
         ]
         self.areas_of_interest = [
             Location(15, 140),
@@ -68,7 +68,7 @@ class SideRoom(Room):
         ]
         self.objects = [
             RoomObject("assets/chest_1.png", (15, 140), 16, 16, 5),
-            RoomObject("assets/chest_1.png", (200, 300), 16, 16, 3)
+            RoomObject("assets/chest_1.png", (200, 300), 16, 16, 10)
         ]
         self.background = self.set_background("assets/room.png")
     
@@ -87,7 +87,7 @@ class RoomObject:
         self.boarder = (x - PlayerInfo.PLAYER_SIZE + RoomObject.H_BOARDER_OFFSET,
                         y - PlayerInfo.PLAYER_SIZE + RoomObject.V_BOARDER_OFFSET,
                         x + self.actual_width - RoomObject.H_BOARDER_OFFSET,
-                        y + self.actual_height - PlayerInfo.PLAYER_SIZE)
+                        y + self.actual_height - (PlayerInfo.PLAYER_SIZE * 5) // 6) # allows for 5/6's of the player to overlap bottom
     
     def set_image(self, image_src, width, height):
         raw_img = image.load(image_src)

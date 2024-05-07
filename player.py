@@ -1,26 +1,19 @@
-from constants import Dir, Window, PlayerInfo
+from constants import Dir, Window
 from planar import Location, Vector
 from animations import CharacterAnimation
 from pygame import Surface
 from room import Room
-
-WALL_SIZE = 30
-TL_BOUND = Location(WALL_SIZE, 0)
-
-OFFSET = PlayerInfo.PLAYER_SIZE // 2
 
 class Player:
 
     def __init__(self, place: Room):
         self.delta_x = 0
         self.delta_y = 0
-        self.x_bound = Location(Window.WIDTH - PlayerInfo.PLAYER_SIZE - WALL_SIZE, 0)
-        self.y_bound = Location(0, Window.HEIGHT - PlayerInfo.PLAYER_SIZE)
 
         self.place = place
         self._orientation = Dir.DOWN
-        self.location = (Window.WIDTH // 2 - OFFSET, Window.HEIGHT // 2 - OFFSET)
-        self._animation = CharacterAnimation(PlayerInfo.PLAYER_SCALE)
+        self.location = (Window.WIDTH // 2, Window.HEIGHT // 2)
+        self._animation = CharacterAnimation()
     
     def set_place(self, place: Room):
         self.place = place    
