@@ -21,5 +21,5 @@ class RoomManager:
         return self.context.background
     
     def prompt_location(self, location: Location):
-        return self.context.near_interest(location)
+        return self.context.in_area_of_interest(location)
 

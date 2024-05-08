@@ -1,18 +1,13 @@
 from pygame import image, transform, Surface # image modification
 from constants import Window, PlayerInfo
 from planar import Location
-from abc import ABC, abstractmethod
 
-class Room(ABC):
+class Room:
     def __init__(self):
         self.background: Surface
         self.boundaries: list[tuple[int, int, int, int]]
         self.areas_of_interest: list[tuple[int, int, int, int]]
         self.objects: list[RoomObject]
-    
-    @abstractmethod
-    def prompt_location(self, location):
-        ...
 
     def in_bounds(self, location: Location):
         for object in self.objects:
@@ -23,22 +18,20 @@ class Room(ABC):
                 return True
         return False
 
-    def near_interest(self, location: Location):
+    def in_area_of_interest(self, location: Location):
         for area in self.areas_of_interest:
-            if location.isWithin(20, area):
+            if location.isWithinRect(area):
                 return True
+        for area in self.objects: #WIP
+            pass
         return False
 
-    def set_background(self, image_src: str):
+    def setup_background(self, image_src: str):
         background = image.load(image_src)
         background = transform.scale(background, (Window.WIDTH, Window.HEIGHT))
         for object in self.objects:
             background.blit(object.image, object.location, (0, 0, object.actual_width, object.actual_height))
         return background
-
-    def _place_objects(self):
-        for object in self.objects:
-            self.background.blit(object.image, object.location, (0, 0, object.width, object.height))
 
 class MiddleRoom(Room):
     def __init__(self):
@@ -51,7 +44,7 @@ class MiddleRoom(Room):
         self.objects = [
             
         ]
-        self.background = self.set_background("assets/sample_room.png")
+        self.background = self.setup_background("assets/sample_room.png")
 
     def prompt_location(self, location):
         ...
@@ -62,17 +55,12 @@ class SideRoom(Room):
             (15, 180 - (PlayerInfo.PLAYER_SIZE * 2) // 3, 700 - PlayerInfo.PLAYER_SIZE, 700 - PlayerInfo.PLAYER_SIZE)
         ]
         self.areas_of_interest = [
-            Location(15, 140),
-            Location(200, 300)
         ]
         self.objects = [
             RoomObject("assets/chest_1.png", (15, 140), 16, 16, 5),
             RoomObject("assets/chest_1.png", (200, 300), 16, 16, 10)
         ]
-        self.background = self.set_background("assets/room.png")
-    
-    def prompt_location(self, location):
-        ...
+        self.background = self.setup_background("assets/room.png")
 
 class RoomObject:
     H_BOARDER_OFFSET = 15

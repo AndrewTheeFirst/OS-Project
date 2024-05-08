@@ -15,24 +15,21 @@ class Game:
         self.screen = pygame.display.set_mode((Window.WIDTH, Window.HEIGHT))
         self.rm = RoomManager()
         self.player = Player(self.rm.context)
-        self.subtitle = Subtitle("Interact", (200, 200))
 
     def mainloop(self):
         self.keyDown = False
-        self.keys_are_enabled = True
+        self.movement_enabled = True
 
         while self.game_running:
             CLOCK.tick(FPS) # puts the correct screen here
             for event in pygame.event.get():
                 self.handle_event(event)
-            if self.keyDown:
-                self.on_hold()
+            # if self.keyDown:
+            #     self.on_hold()
             current_frame = self.player.animation
             self.screen.blit(self.rm.current_background, (0, 0))
             self.screen.blit(current_frame, self.player.location) # will place the character onto the screen at location
-            self.prompt_location()
-            if self.subtitle.show:
-                self.screen.blit(self.subtitle.text, self.subtitle.location)
+            self.prompt_location(self.screen)
             pygame.display.update()
         pygame.quit()
 
@@ -40,65 +37,48 @@ class Game:
         if event.type == pygame.QUIT:
             self.game_running = False
             return
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.on_mouse_click()
-        if self.keys_are_enabled:
-            if event.type == pygame.KEYDOWN:
-                self.keyDown = True
-                self.on_key_press()
-            elif event.type == pygame.KEYUP and no_keys_pressed():
-                self.keyDown = False
-                self.on_key_release()
-            elif event.type == pygame.KEYUP:
-                self.player.orientation = get_direction()   
+        # if event.type == pygame.MOUSEBUTTONDOWN:
+        #     self.on_mouse_click()
+        if event.type == pygame.KEYDOWN:
+            self.keyDown = True
+            self.on_key_press()
+        elif event.type == pygame.KEYUP and no_keys_pressed():
+            self.keyDown = False
+            self.on_key_release()
+        elif event.type == pygame.KEYUP:
+            self.player.orientation = get_direction()   
             
     def on_key_press(self):
-        direction = get_direction()
-        self.player.orientation = direction
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_e] and self.can_interact():
+            self.interact
+        if self.movement_enabled:
+            direction = get_direction(keys)
+            self.player.orientation = direction
 
     def on_key_release(self):
         self.player.stop_movement()
 
-    def on_mouse_click(self):
-        key = pygame.mouse.get_pressed()
-        pos = pygame.mouse.get_pos()
-        if key[Mouse.LEFT]:
-            if self.interact(pos):
-                self.keys_are_enabled = False
-                self.player.stop_movement()
-            self.keys_are_enabled = True
-            self.subtitle.show = False
-            
-        if key[Mouse.MIDDLE]:
-            ...
-        if key[Mouse.RIGHT]:
-            self.keys_are_enabled = False
-            self.player.stop_movement()
-            self.subtitle.show = True
+    # def on_mouse_click(self):
+    #     key = pygame.mouse.get_pressed()
+    #     if key[Mouse.LEFT]:
+    #         ...
+    #     if key[Mouse.MIDDLE]:
+    #         ...
+    #     if key[Mouse.RIGHT]:
+    #         ...
 
-    def on_hold(self):
-        pass
+    # def on_hold(self):
+    #     pass
 
-    def interact(self, pos_clicked):
-        print(pos_clicked, self.player.location)
+    def can_interact(self):
+        print(self.player.location)
         return False
     
     def prompt_location(self):
-        shouldPrompt = self.rm.prompt_location(self.player.raw_location)
-        if shouldPrompt and not self.subtitle.show:
-            self.subtitle.show = True
-            self.subtitle.location = self.player.location
-            self.put_text()
-        elif shouldPrompt:
-            self.put_text()
-        else:
-            self.subtitle.show = False
-    
-    def put_text(self):
-        self.screen.blit(self.subtitle.text, self.subtitle.location)
+        ...
 
-def get_direction() -> int:
-        keys = pygame.key.get_pressed()
+def get_direction(keys) -> int:
         if keys[pygame.K_w] and keys[pygame.K_a]:
             return Dir.UP_LEFT
         if keys[pygame.K_w] and keys[pygame.K_d]:
