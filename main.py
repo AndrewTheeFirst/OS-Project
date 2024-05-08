@@ -1,5 +1,5 @@
 from player import Player
-from constants import Dir, Window, MOUSE
+from constants import Dir, Window, Mouse
 from contexts import RoomManager
 import pygame
 from pygame.event import Event
@@ -41,37 +41,37 @@ class Game:
             self.game_running = False
             return
         if event.type == pygame.MOUSEBUTTONDOWN:
-            self.on_mouse_click(event)
+            self.on_mouse_click()
         if self.keys_are_enabled:
             if event.type == pygame.KEYDOWN:
                 self.keyDown = True
-                self.on_key_press(event)
+                self.on_key_press()
             elif event.type == pygame.KEYUP and no_keys_pressed():
                 self.keyDown = False
-                self.on_key_release(event)
+                self.on_key_release()
             elif event.type == pygame.KEYUP:
                 self.player.orientation = get_direction()   
             
-    def on_key_press(self, event):
+    def on_key_press(self):
         direction = get_direction()
         self.player.orientation = direction
 
-    def on_key_release(self, event):
+    def on_key_release(self):
         self.player.stop_movement()
 
-    def on_mouse_click(self, event):
+    def on_mouse_click(self):
         key = pygame.mouse.get_pressed()
         pos = pygame.mouse.get_pos()
-        if key[MOUSE.LEFT]:
+        if key[Mouse.LEFT]:
             if self.interact(pos):
                 self.keys_are_enabled = False
                 self.player.stop_movement()
             self.keys_are_enabled = True
             self.subtitle.show = False
             
-        if key[MOUSE.MIDDLE]:
+        if key[Mouse.MIDDLE]:
             ...
-        if key[MOUSE.RIGHT]:
+        if key[Mouse.RIGHT]:
             self.keys_are_enabled = False
             self.player.stop_movement()
             self.subtitle.show = True

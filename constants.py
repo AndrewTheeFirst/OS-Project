@@ -14,7 +14,7 @@ class Window:
     WIDTH = 720
     HEIGHT = 720
 
-class MOUSE:
+class Mouse:
     LEFT = 0
     MIDDLE = 1
     RIGHT = 2

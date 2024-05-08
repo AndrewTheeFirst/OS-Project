@@ -1,8 +1,7 @@
 from pygame import image, transform, Surface # image modification
-from constants import Window
+from constants import Window, PlayerInfo
 from planar import Location
 from abc import ABC, abstractmethod
-from constants import PlayerInfo
 
 class Room(ABC):
     def __init__(self):
